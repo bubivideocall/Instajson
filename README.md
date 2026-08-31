@@ -52,6 +52,8 @@ The script will:
   "videos": [
     {
       "id": "video-001",
+      "username": "riya_mehta",
+      "displayName": "Riya Mehta",
       "filename": "video-001.mp4",
       "url": "https://your-username.github.io/Instajson/videos/video-001.mp4",
       "sizeBytes": 7452953,
