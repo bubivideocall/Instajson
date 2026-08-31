@@ -9,26 +9,26 @@ $profilesPath = Join-Path $root "video-profiles.json"
 $outputPath = Join-Path $root "videos.json"
 
 $namePool = @(
-    @{ username = "shreya_bakshi"; displayName = "Shreya Bakshi" },
-    @{ username = "tara_mehta"; displayName = "Tara Mehta" },
-    @{ username = "uma_sharma"; displayName = "Uma Sharma" },
-    @{ username = "vidya_nambiar"; displayName = "Vidya Nambiar" },
-    @{ username = "wafa_ansari"; displayName = "Wafa Ansari" },
-    @{ username = "xara_khan"; displayName = "Xara Khan" },
-    @{ username = "yashika_reddy"; displayName = "Yashika Reddy" },
-    @{ username = "zoya_malik"; displayName = "Zoya Malik" },
-    @{ username = "amrita_suri"; displayName = "Amrita Suri" },
-    @{ username = "barkha_grover"; displayName = "Barkha Grover" },
-    @{ username = "charu_oberoi"; displayName = "Charu Oberoi" },
-    @{ username = "damini_rastogi"; displayName = "Damini Rastogi" },
-    @{ username = "ekta_sawant"; displayName = "Ekta Sawant" },
-    @{ username = "farah_qureshi"; displayName = "Farah Qureshi" },
-    @{ username = "geetika_luthra"; displayName = "Geetika Luthra" },
-    @{ username = "harleen_kaur"; displayName = "Harleen Kaur" },
-    @{ username = "indira_puri"; displayName = "Indira Puri" },
-    @{ username = "jhanvi_sood"; displayName = "Jhanvi Sood" },
-    @{ username = "kamya_bhalla"; displayName = "Kamya Bhalla" },
-    @{ username = "laxmi_tiwari"; displayName = "Laxmi Tiwari" }
+    @{ username = "scarlett_wright"; displayName = "Scarlett Wright" },
+    @{ username = "violet_hughes"; displayName = "Violet Hughes" },
+    @{ username = "stella_cooper"; displayName = "Stella Cooper" },
+    @{ username = "maya_bennett"; displayName = "Maya Bennett" },
+    @{ username = "claire_foster"; displayName = "Claire Foster" },
+    @{ username = "audrey_brooks"; displayName = "Audrey Brooks" },
+    @{ username = "hazel_price"; displayName = "Hazel Price" },
+    @{ username = "savannah_ward"; displayName = "Savannah Ward" },
+    @{ username = "autumn_ross"; displayName = "Autumn Ross" },
+    @{ username = "skylar_bailey"; displayName = "Skylar Bailey" },
+    @{ username = "paisley_reed"; displayName = "Paisley Reed" },
+    @{ username = "willow_morgan"; displayName = "Willow Morgan" },
+    @{ username = "piper_sullivan"; displayName = "Piper Sullivan" },
+    @{ username = "quinn_murphy"; displayName = "Quinn Murphy" },
+    @{ username = "reagan_kelly"; displayName = "Reagan Kelly" },
+    @{ username = "sloane_parker"; displayName = "Sloane Parker" },
+    @{ username = "teagan_collins"; displayName = "Teagan Collins" },
+    @{ username = "blair_stewart"; displayName = "Blair Stewart" },
+    @{ username = "caitlin_murray"; displayName = "Caitlin Murray" },
+    @{ username = "fiona_macdonald"; displayName = "Fiona MacDonald" }
 )
 
 if (-not (Test-Path $videosDir)) {
