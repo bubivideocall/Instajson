@@ -1,6 +1,6 @@
 # Instajson — Video API for Android
 
-JSON API for serving videos from GitHub to your Android app.
+JSON API for serving videos from GitHub Pages to your Android app.
 
 ## Setup
 
@@ -13,17 +13,19 @@ JSON API for serving videos from GitHub to your Android app.
    }
    ```
 
-2. Push this repo to GitHub (including the `videos/` folder).
+2. Enable **GitHub Pages** on the `main` branch (Settings → Pages).
+
+3. Push this repo to GitHub (including the `videos/` folder).
 
 ## API endpoint
 
 After pushing to GitHub, your Android app can fetch:
 
 ```
-https://raw.githubusercontent.com/YOUR_USERNAME/Instajson/main/videos.json
+https://YOUR_USERNAME.github.io/Instajson/videos.json
 ```
 
-Each video entry includes a direct `url` to the MP4 file on GitHub.
+Each video entry includes a direct `url` to the MP4 file on GitHub Pages.
 
 ## Adding new videos
 
@@ -37,7 +39,7 @@ Each video entry includes a direct `url` to the MP4 file on GitHub.
 The script will:
 - Rename new videos to `video-029.mp4`, `video-030.mp4`, etc.
 - Keep existing `video-XXX.mp4` names unchanged
-- Regenerate `videos.json` with updated URLs and count
+- Regenerate `videos.json` with updated GitHub Pages URLs and count
 
 ## JSON structure
 
@@ -45,13 +47,13 @@ The script will:
 {
   "version": 1,
   "lastUpdated": "2026-08-31T12:00:00Z",
-  "baseUrl": "https://raw.githubusercontent.com/user/repo/main",
+  "baseUrl": "https://your-username.github.io/Instajson",
   "totalVideos": 28,
   "videos": [
     {
       "id": "video-001",
       "filename": "video-001.mp4",
-      "url": "https://raw.githubusercontent.com/user/repo/main/videos/video-001.mp4",
+      "url": "https://your-username.github.io/Instajson/videos/video-001.mp4",
       "sizeBytes": 7452953,
       "order": 1
     }
@@ -63,6 +65,6 @@ The script will:
 
 ```kotlin
 // Fetch video list
-val response = URL("https://raw.githubusercontent.com/YOUR_USERNAME/Instajson/main/videos.json").readText()
+val response = URL("https://bubivideocall.github.io/Instajson/videos.json").readText()
 // Parse JSON and use video.url for ExoPlayer / MediaPlayer
 ```

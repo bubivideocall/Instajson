@@ -12,7 +12,7 @@ if (-not (Test-Path $videosDir)) {
 }
 
 $config = Get-Content $configPath -Raw | ConvertFrom-Json
-$baseUrl = "https://raw.githubusercontent.com/$($config.owner)/$($config.repo)/$($config.branch)"
+$baseUrl = "https://$($config.owner).github.io/$($config.repo)"
 
 function Get-NextVideoNumber {
     param([string[]]$ExistingNames)
@@ -77,7 +77,9 @@ $output = [ordered]@{
     videos      = $videos
 }
 
-$output | ConvertTo-Json -Depth 10 | Set-Content $outputPath -Encoding UTF8
+$json = $output | ConvertTo-Json -Depth 10
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText($outputPath, $json, $utf8NoBom)
 
 Write-Host ""
 Write-Host "Done! Generated $outputPath with $($videos.Count) videos."
