@@ -4,6 +4,7 @@
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 $videosDir = Join-Path $root "videos"
+$thumbnailsDir = Join-Path $root "thumbnails"
 $configPath = Join-Path $root "github-config.json"
 $profilesPath = Join-Path $root "video-profiles.json"
 $outputPath = Join-Path $root "videos.json"
@@ -33,6 +34,42 @@ $namePool = @(
 
 if (-not (Test-Path $videosDir)) {
     Write-Error "videos/ folder not found at $videosDir"
+}
+
+if (-not (Test-Path $thumbnailsDir)) {
+    New-Item -ItemType Directory -Path $thumbnailsDir | Out-Null
+    Write-Host "Created thumbnails/ folder."
+}
+
+function Ensure-Thumbnail {
+    param(
+        [string]$VideoPath,
+        [string]$ThumbnailPath
+    )
+
+    if (Test-Path $ThumbnailPath) {
+        return
+    }
+
+    $ffmpegArgs = @(
+        "-y",
+        "-ss", "00:00:01",
+        "-i", $VideoPath,
+        "-vframes", "1",
+        "-q:v", "2",
+        $ThumbnailPath
+    )
+
+    $prevErrorAction = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & ffmpeg @ffmpegArgs 2>&1 | Out-Null
+    } finally {
+        $ErrorActionPreference = $prevErrorAction
+    }
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning "Failed to create thumbnail for $VideoPath"
+    }
 }
 
 $config = Get-Content $configPath -Raw | ConvertFrom-Json
@@ -75,7 +112,7 @@ function Get-NextVideoNumber {
     param([string[]]$ExistingNames)
     $max = 0
     foreach ($name in $ExistingNames) {
-        if ($name -match '^video-(\d{3})\.mp4$') {
+        if ($name -cmatch '^video-(\d{3})\.mp4$') {
             $num = [int]$Matches[1]
             if ($num -gt $max) { $max = $num }
         }
@@ -84,10 +121,10 @@ function Get-NextVideoNumber {
 }
 
 $allFiles = Get-ChildItem $videosDir -File -Filter "*.mp4"
-$alreadyNamed = @($allFiles | Where-Object { $_.Name -match '^video-\d{3}\.mp4$' })
-$needsRename = @($allFiles | Where-Object { $_.Name -notmatch '^video-\d{3}\.mp4$' } | Sort-Object LastWriteTime, Name)
+$alreadyNamed = @($allFiles | Where-Object { $_.Name -cmatch '^video-\d{3}\.mp4$' })
+$needsRename = @($allFiles | Where-Object { $_.Name -cnotmatch '^video-\d{3}\.mp4$' } | Sort-Object LastWriteTime, Name)
 
-$nextNum = Get-NextVideoNumber -ExistingNames @($alreadyNamed.Name)
+$nextNum = Get-NextVideoNumber -ExistingNames @($allFiles.Name)
 $renamed = @()
 
 foreach ($file in $needsRename) {
@@ -106,10 +143,10 @@ foreach ($file in $needsRename) {
     $nextNum++
 }
 
-$videoFiles = Get-ChildItem $videosDir -File -Filter "video-*.mp4" |
-    Where-Object { $_.Name -match '^video-\d{3}\.mp4$' } |
+$videoFiles = Get-ChildItem $videosDir -File -Filter "*.mp4" |
+    Where-Object { $_.Name -cmatch '^video-\d{3}\.mp4$' } |
     Sort-Object {
-        if ($_.Name -match '^video-(\d{3})\.mp4$') { [int]$Matches[1] } else { 9999 }
+        if ($_.Name -cmatch '^video-(\d{3})\.mp4$') { [int]$Matches[1] } else { 9999 }
     }
 
 $videos = @()
@@ -117,14 +154,22 @@ $order = 1
 foreach ($file in $videoFiles) {
     $id = $file.BaseName
     $profile = Get-OrAssignProfile -VideoId $id
+    $thumbnailFilename = "$id.jpg"
+    $thumbnailPath = Join-Path $thumbnailsDir $thumbnailFilename
+    Ensure-Thumbnail -VideoPath $file.FullName -ThumbnailPath $thumbnailPath
+    $thumbnailSizeBytes = if (Test-Path $thumbnailPath) { (Get-Item $thumbnailPath).Length } else { 0 }
+
     $videos += [ordered]@{
-        id          = $id
-        username    = $profile.username
-        displayName = $profile.displayName
-        filename    = $file.Name
-        url         = "$baseUrl/videos/$($file.Name)"
-        sizeBytes   = $file.Length
-        order       = $order
+        id                = $id
+        username          = $profile.username
+        displayName       = $profile.displayName
+        filename          = $file.Name
+        url               = "$baseUrl/videos/$($file.Name)"
+        thumbnailFilename = $thumbnailFilename
+        thumbnailUrl      = "$baseUrl/thumbnails/$thumbnailFilename"
+        sizeBytes         = $file.Length
+        thumbnailSizeBytes = $thumbnailSizeBytes
+        order             = $order
     }
     $order++
 }
