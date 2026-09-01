@@ -5,3 +5,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Isolated downloader tool (separate environment)
+downloadvideos/
